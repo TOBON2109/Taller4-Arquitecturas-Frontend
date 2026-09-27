@@ -1,0 +1,22 @@
+<table class="table table-striped border">
+	<thead>
+		<tr>
+			<th scope="col">Id</th>
+			<th scope="col">Cliente</th>
+			<th scope="col">Total</th>
+			<th scope="col">Estado</th>
+		</tr>
+	</thead>
+	<tbody>
+		@for (pedido of pedidos; track pedido) {
+			<tr>
+				<th scope="row">{{ pedido.id }}</th>
+				<td>{{ pedido.client }}</td>
+				<td>{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+				<td>
+					<dsb-badge-atom [text]="pedido.status" [type]="statusMap[pedido.status]"></dsb-badge-atom>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

@@ -1,0 +1,22 @@
+<table class="table table-striped border">
+	<thead>
+		<tr>
+			<th scope="col">Id</th>
+			<th scope="col">Nombre</th>
+			<th scope="col">Descripción</th>
+			<th scope="col">Tipo</th>
+		</tr>
+	</thead>
+	<tbody>
+		@for (categoria of categorias; track categoria) {
+			<tr>
+				<th scope="row">{{ categoria.id }}</th>
+				<td>{{ categoria.name }}</td>
+				<td>{{ categoria.description }}</td>
+				<td>
+					<dsb-badge-atom [text]="categoria.type" [type]="typeMap[categoria.type]"></dsb-badge-atom>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

@@ -1,0 +1,41 @@
+---
+import Badge from "@components/shared/Badge.astro";
+import { PROVEEDORES } from "@data/Proveedores";
+import type { BadgeType } from "@interfaces/Badge";
+import type { Proveedor, ProveedorStatus } from "@interfaces/Proveedores";
+import MainLayout from "@layouts/MainLayout.astro";
+
+const proveedores: Proveedor[] = PROVEEDORES;
+
+const statusMap: Record<ProveedorStatus, BadgeType> = {
+  'Activo': 'success',
+  'Inactivo': 'danger',
+  'Pendiente': 'warning',
+}
+---
+<MainLayout>
+  <table class="table table-striped border">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">NIT</th>
+        <th scope="col">Ciudad</th>
+        <th scope="col">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {proveedores.map((proveedor) => (
+        <tr>
+          <th scope="row">{proveedor.id}</th>
+          <td>{proveedor.name}</td>
+          <td>{proveedor.nit}</td>
+          <td>{proveedor.city}</td>
+          <td>
+            <Badge text={proveedor.status} type={statusMap[proveedor.status]} />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</MainLayout>

@@ -1,0 +1,40 @@
+---
+import Badge from "@components/shared/Badge.astro";
+import { PEDIDOS } from "@data/Pedidos";
+import type { BadgeType } from "@interfaces/Badge";
+import type { Pedido, PedidoStatus } from "@interfaces/Pedidos";
+import MainLayout from "@layouts/MainLayout.astro";
+
+const pedidos: Pedido[] = PEDIDOS;
+
+const statusMap: Record<PedidoStatus, BadgeType> = {
+  'Pendiente': 'warning',
+  'Enviado': 'primary',
+  'Entregado': 'success',
+  'Cancelado': 'danger',
+}
+---
+<MainLayout>
+  <table class="table table-striped border">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Cliente</th>
+        <th scope="col">Total</th>
+        <th scope="col">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {pedidos.map((pedido) => (
+        <tr>
+          <th scope="row">{pedido.id}</th>
+          <td>{pedido.client}</td>
+          <td>{pedido.total.toLocaleString('es-CO')}</td>
+          <td>
+            <Badge text={pedido.status} type={statusMap[pedido.status]} />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</MainLayout>

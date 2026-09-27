@@ -1,0 +1,24 @@
+<table class="table table-striped border">
+	<thead>
+		<tr>
+			<th scope="col">Id</th>
+			<th scope="col">Nombre</th>
+			<th scope="col">NIT</th>
+			<th scope="col">Ciudad</th>
+			<th scope="col">Estado</th>
+		</tr>
+	</thead>
+	<tbody>
+		@for (proveedor of proveedores; track proveedor) {
+			<tr>
+				<th scope="row">{{ proveedor.id }}</th>
+				<td>{{ proveedor.name }}</td>
+				<td>{{ proveedor.nit }}</td>
+				<td>{{ proveedor.city }}</td>
+				<td>
+					<dsb-badge-atom [text]="proveedor.status" [type]="statusMap[proveedor.status]"></dsb-badge-atom>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
