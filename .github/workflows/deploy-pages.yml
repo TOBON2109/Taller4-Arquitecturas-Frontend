@@ -102,7 +102,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  verify:
+   verify:
     runs-on: ubuntu-latest
     needs: deploy
     env:
@@ -133,7 +133,9 @@ jobs:
       - name: Verify the Astro SSG
         run: |
           curl --fail --silent --show-error --location --output ssg.html "$BASE/ssg/"
-          grep -qi "<html" ssg.html
+          echo "OK: SSG entry point responds"
+          curl --fail --silent --show-error --location --output ssg-users.html "$BASE/ssg/users/"
+          grep -qi "<html" ssg-users.html
           curl --fail --silent --show-error --location --output ssg-products.html "$BASE/ssg/products/"
           grep -qi "<html" ssg-products.html
           echo "OK: SSG pages are available"
