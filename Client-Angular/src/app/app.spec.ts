@@ -36,6 +36,9 @@ describe('App', () => {
         { text: 'Usuarios', url: '/users' },
         { text: 'Productos', url: '/products' },
         { text: 'Fecha', url: '/date' },
+        { text: 'Categorías', url: '/categorias' },
+        { text: 'Proveedores', url: '/proveedores' },
+        { text: 'Pedidos', url: '/pedidos' },
       ]
     });
   });
