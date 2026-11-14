@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Taller 4 | SPA vs SSG</title>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --line: #334155;
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --spa: #f43f5e;
+        --ssg: #a78bfa;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        line-height: 1.6;
+      }
+      main { width: min(920px, calc(100% - 40px)); margin: 0 auto; padding: 48px 0; }
+      h1 { margin: 0 0 8px; font-size: clamp(2rem, 5vw, 3rem); }
+      h2 { margin: 40px 0 12px; }
+      p { color: var(--muted); }
+      .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-top: 28px; }
+      .card {
+        display: block;
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--surface);
+        color: var(--text);
+        text-decoration: none;
+      }
+      .card:hover { transform: translateY(-2px); }
+      .card.spa { border-top: 4px solid var(--spa); }
+      .card.ssg { border-top: 4px solid var(--ssg); }
+      .card h3 { margin: 0 0 6px; }
+      .card span { font-weight: 700; }
+      .spa span { color: var(--spa); }
+      .ssg span { color: var(--ssg); }
+      table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line); }
+      th, td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; }
+      th { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; }
+      .wrap { overflow-x: auto; }
+      footer { margin-top: 40px; color: var(--muted); font-size: 0.85rem; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>SPA vs SSG</h1>
+      <p>
+        Taller 4 de Arquitectura de Software. La misma aplicación construida con dos arquitecturas:
+        una SPA con Angular y un sitio estático generado con Astro.
+      </p>
+
+      <div class="grid">
+        <a class="card spa" href="spa/">
+          <h3>Angular · SPA</h3>
+          <p>Aplicación de una sola página que se renderiza en el navegador.</p>
+          <span>Abrir la SPA →</span>
+        </a>
+        <a class="card ssg" href="ssg/">
+          <h3>Astro · SSG</h3>
+          <p>Sitio estático: el HTML se genera completo durante el build.</p>
+          <span>Abrir el SSG →</span>
+        </a>
+      </div>
+
+      <h2>Comparación medida en el taller</h2>
+      <div class="wrap">
+        <table>
+          <thead>
+            <tr><th>Métrica</th><th>Angular (SPA)</th><th>Astro (SSG)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Tamaño de recursos</td><td>~1.03 MB</td><td>~0.63 MB</td></tr>
+            <tr><td>Transferido</td><td>837 kB</td><td>182 kB</td></tr>
+            <tr><td>Tiempo de carga</td><td>272.5 ms</td><td>142.4 ms</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <footer>Angular · Astro · GitHub Actions · GitHub Pages</footer>
+    </main>
+  </body>
+</html>

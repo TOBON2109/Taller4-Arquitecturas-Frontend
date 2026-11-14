@@ -1,0 +1,139 @@
+name: Deploy SPA vs SSG to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+env:
+  REPO_PATH: /Taller4-Arquitecturas-Frontend
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Client-Angular
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: Client-Angular/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Unit Tests
+        run: npm test
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            Client-Angular/package-lock.json
+            Astro-SSG/package-lock.json
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build Angular (SPA)
+        working-directory: Client-Angular
+        run: |
+          npm ci
+          npx ng build --base-href "${{ env.REPO_PATH }}/spa/"
+
+      - name: Build Astro (SSG)
+        working-directory: Astro-SSG
+        env:
+          ASTRO_BASE: ${{ env.REPO_PATH }}/ssg
+        run: |
+          npm ci
+          npm run build
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site/spa _site/ssg
+          cp -r landing/. _site/
+          cp -r Client-Angular/dist/*/browser/. _site/spa/
+          cp -r Astro-SSG/dist/. _site/ssg/
+          cp _site/spa/index.html _site/404.html
+          touch _site/.nojekyll
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  verify:
+    runs-on: ubuntu-latest
+    needs: deploy
+    env:
+      BASE: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+
+    steps:
+      - name: Verify the landing page
+        run: |
+          echo "Verifying $BASE/"
+          curl --fail --silent --show-error --location \
+            --retry 10 --retry-delay 15 --retry-all-errors \
+            --output home.html "$BASE/"
+          grep -qi "SPA vs SSG" home.html
+          echo "OK: landing page is available"
+
+      - name: Verify the Angular SPA
+        run: |
+          curl --fail --silent --show-error --location --output spa.html "$BASE/spa/"
+          grep -qi "<app-root" spa.html
+          echo "OK: SPA is available"
+
+      - name: Verify the SPA deep link (404.html fallback)
+        run: |
+          curl --silent --show-error --location --output deep.html "$BASE/spa/products"
+          grep -qi "<app-root" deep.html
+          echo "OK: deep link returns the application shell"
+
+      - name: Verify the Astro SSG
+        run: |
+          curl --fail --silent --show-error --location --output ssg.html "$BASE/ssg/"
+          grep -qi "<html" ssg.html
+          curl --fail --silent --show-error --location --output ssg-products.html "$BASE/ssg/products/"
+          grep -qi "<html" ssg-products.html
+          echo "OK: SSG pages are available"
