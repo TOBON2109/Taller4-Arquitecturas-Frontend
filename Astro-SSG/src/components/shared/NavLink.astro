@@ -7,15 +7,23 @@ interface Props {
 
 const { navLinks } = Astro.props as Props;
 const { pathname } = Astro.url;
+
+// Ruta base del sitio ('' en local, '/Taller4-Arquitecturas-Frontend/ssg' en GitHub Pages)
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const normalize = (path: string) => path.replace(/\/+$/, '') || '/';
+const current = normalize(pathname);
 ---
 
 <ul class="nav nav-pills">
-    {navLinks.map((navLink) => (
-        <li class="nav-item">
-            <a  href={navLink.url}
-                class={`nav-link ${pathname === navLink.url ? "active" : ""}`}>
-                {navLink.text}
-            </a>
-        </li>
-    ))}
+    {navLinks.map((navLink) => {
+        const href = `${base}${navLink.url}`;
+        return (
+            <li class="nav-item">
+                <a  href={href}
+                    class={`nav-link ${current === normalize(href) ? "active" : ""}`}>
+                    {navLink.text}
+                </a>
+            </li>
+        );
+    })}
 </ul>
